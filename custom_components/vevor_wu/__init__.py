@@ -18,7 +18,7 @@ from .readings import parse_readings, unknown_params
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORMS: list[Platform] = []
+PLATFORMS: list[Platform] = [Platform.SENSOR]
 
 
 @dataclass
