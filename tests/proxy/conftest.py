@@ -35,7 +35,7 @@ async def fake_wu(aiohttp_server):
     rec = Recorder()
 
     async def handler(request):
-        rec.requests.append({"raw_query": request.rel_url.raw_query_string})
+        rec.requests.append({"raw_query": request.raw_path.partition("?")[2]})
         return web.Response(status=rec.status, text="success\n")
 
     app = web.Application()

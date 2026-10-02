@@ -43,12 +43,15 @@ async def relay_to_wunderground(
     session: aiohttp.ClientSession, settings: Settings, raw_query: str
 ) -> None:
     """Replay the station's original request upstream. Never raises."""
-    url = URL(f"{settings.upstream_url}{WU_PATH}?{raw_query}", encoded=True)
     try:
+        url = URL(f"{settings.upstream_url}{WU_PATH}?{raw_query}", encoded=True)
+        # Never follow redirects: that would replay the station password elsewhere.
         async with session.get(
-            url, timeout=aiohttp.ClientTimeout(total=settings.upstream_timeout)
+            url,
+            allow_redirects=False,
+            timeout=aiohttp.ClientTimeout(total=settings.upstream_timeout),
         ) as resp:
-            if resp.status >= 400:
+            if resp.status >= 300:
                 _LOGGER.warning(
                     "Wunderground returned HTTP %s for %s",
                     resp.status,

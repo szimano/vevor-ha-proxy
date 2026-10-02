@@ -6,6 +6,7 @@ import os
 from typing import Any
 
 from aiohttp import web
+from yarl import URL
 
 from .app import create_app
 from .config import Settings
@@ -21,6 +22,11 @@ def main() -> None:
         format="%(asctime)s %(levelname)s %(name)s: %(message)s",
     )
     settings = Settings.from_env()
+    logging.getLogger("wu_proxy").info(
+        "Starting: relay %s, upstream host %s",
+        "on" if settings.relay_enabled else "off",
+        URL(settings.upstream_url).host,
+    )
     web.run_app(create_app(settings), **run_kwargs(settings))
 
 

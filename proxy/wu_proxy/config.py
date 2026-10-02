@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import os
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 DEFAULT_UPSTREAM_URL = "https://rtupdate.wunderground.com"
 _TRUE = {"1", "true", "yes", "on"}
@@ -11,7 +11,7 @@ _TRUE = {"1", "true", "yes", "on"}
 
 @dataclass(frozen=True)
 class Settings:
-    ha_webhook_url: str
+    ha_webhook_url: str = field(repr=False)
     upstream_url: str = DEFAULT_UPSTREAM_URL
     relay_enabled: bool = True
     host: str = "0.0.0.0"
@@ -29,7 +29,7 @@ class Settings:
         return cls(
             ha_webhook_url=webhook,
             upstream_url=env.get("UPSTREAM_URL", DEFAULT_UPSTREAM_URL).rstrip("/"),
-            relay_enabled=env.get("RELAY_ENABLED", "true").lower() in _TRUE,
+            relay_enabled=env.get("RELAY_ENABLED", "true").strip().lower() in _TRUE,
             host=env.get("BIND_HOST", "0.0.0.0"),
             port=int(env.get("PORT", "80")),
         )
