@@ -1,4 +1,5 @@
 import asyncio
+import logging
 
 import pytest
 from aiohttp import web
@@ -61,3 +62,13 @@ def drain():
         await asyncio.gather(*list(app[TASKS_KEY]), return_exceptions=True)
 
     return _drain
+
+
+@pytest.fixture(autouse=True)
+def disable_aiohttp_access_log():
+    """Disable aiohttp access logging to prevent password leaks in logs."""
+    logger = logging.getLogger("aiohttp.access")
+    original_level = logger.level
+    logger.setLevel(logging.CRITICAL)
+    yield
+    logger.setLevel(original_level)
