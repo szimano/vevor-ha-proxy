@@ -1,0 +1,34 @@
+services:
+  wu-proxy:
+    build: .
+    container_name: wu-proxy
+    restart: unless-stopped
+    environment:
+      HA_WEBHOOK_URL: ${HA_WEBHOOK_URL:?set HA_WEBHOOK_URL in .env}
+      BIND_HOST: ${PROXY_IP:?set PROXY_IP in .env}
+      PORT: "80"
+    # Never use the Pi-hole that overrides rtupdate.wunderground.com, or the relay loops to itself.
+    dns:
+      - 1.1.1.1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      # Default route goes out through the bridge (NAT via the host). It also keeps
+      # host.docker.internal reachable. Needs Docker Engine 28+ for gw_priority.
+      bridge_net:
+        gw_priority: 10
+      # Own LAN IP for the station; macvlan, so only the station-facing side uses it.
+      lan:
+        ipv4_address: ${PROXY_IP}
+        gw_priority: 0
+
+networks:
+  bridge_net: {}
+  lan:
+    driver: macvlan
+    driver_opts:
+      parent: ${LAN_INTERFACE:-enp8s0}
+    ipam:
+      config:
+        - subnet: ${LAN_SUBNET:-192.168.1.0/24}
+          gateway: ${LAN_GATEWAY:-192.168.1.1}
