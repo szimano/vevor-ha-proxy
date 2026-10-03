@@ -1,0 +1,4 @@
+-r proxy/requirements.txt
+pytest
+pytest-asyncio
+pytest-aiohttp

@@ -1,0 +1,11 @@
+{
+  "domain": "vevor_wu",
+  "name": "Vevor weather station (Wunderground proxy)",
+  "codeowners": [],
+  "config_flow": true,
+  "dependencies": ["webhook"],
+  "documentation": "https://github.com/szimano/weather-ha",
+  "iot_class": "local_push",
+  "requirements": [],
+  "version": "0.1.0"
+}

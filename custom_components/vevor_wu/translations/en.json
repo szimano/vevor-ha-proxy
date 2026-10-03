@@ -1,0 +1,13 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Vevor weather station",
+        "description": "A webhook will be created for the proxy to post readings to. After setup, set the proxy's HA_WEBHOOK_URL to http://host.docker.internal:8123{path}"
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Only one Vevor weather station can be configured."
+    }
+  }
+}
