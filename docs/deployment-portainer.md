@@ -47,8 +47,12 @@ server's Docker:
 1. On your Mac:
    ```bash
    cd /Users/szimano/code/weather-ha/proxy
-   tar czf ~/wu-proxy-build.tar.gz --exclude=.env --exclude=__pycache__ .
+   COPYFILE_DISABLE=1 tar --no-xattrs --no-mac-metadata --format ustar \
+     -czf ~/wu-proxy-build.tar.gz --exclude=.env --exclude=__pycache__ --exclude=.DS_Store .
    ```
+   The extra flags matter on macOS: a plain `tar` embeds the hidden `com.apple.provenance`
+   attribute, and Docker on Linux then fails with
+   `lsetxattr /requirements.txt: xattr "com.apple.provenance": operation not supported`.
 2. In Portainer, select the **HA host's environment**, then Images > **Build a new image**.
 3. Name: `wu-proxy:latest`. Method: **Upload**, choose `~/wu-proxy-build.tar.gz`.
    Click **Build the image** and wait for the success output.
